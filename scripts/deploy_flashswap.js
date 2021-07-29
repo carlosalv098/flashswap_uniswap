@@ -7,7 +7,7 @@ async function main() {
 
     await flashswap_uniswap.deployed();
 
-    console.log("Liquidation deployed to:", flashswap_uniswap.address);
+    console.log("flashswap_uniswap deployed to:", flashswap_uniswap.address);
 
 }
 
