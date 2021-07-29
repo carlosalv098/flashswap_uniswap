@@ -6,12 +6,13 @@ import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '../interfaces/IUniswap.sol';
 import '../interfaces/IUniswapV2Callee.sol';
+import 'hardhat/console.sol';
 
 contract Flashswap_uniswap is IUniswapV2Callee {
 
     using SafeMath for uint;
 
-    address owner;
+    address public owner;
     address private constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address private constant FACTORY = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
 
@@ -70,15 +71,17 @@ contract Flashswap_uniswap is IUniswapV2Callee {
         (address token_to_borrow, uint _amount_to_borrow) = abi.decode(_data, (address, uint));
 
         // calculate the fee
-        uint fee = ((_amount_to_borrow * 3) - 997) + 1;
+        uint fee = ((_amount_to_borrow * 3) / 997) + 1;
         uint amount_to_repay = _amount_to_borrow.add(fee);
 
         // do something with the tokens arbitrage, etc...
-        emit Log('amount:', _amount_to_borrow);
-        emit Log('amount_0:', _amount0);
-        emit Log('amount_1:', _amount1);
-        emit Log('fee:', fee);
-        emit Log('amount to repay:', amount_to_repay);
+
+        console.log('amount to borrow %s',_amount_to_borrow);
+        console.log('token to borrow %s', token_to_borrow);
+        console.log('amount_0 %s', _amount0);
+        console.log('amount_1 %s', _amount1);
+        console.log('fee: %s', fee);
+        console.log('amount to repay %s', amount_to_repay);
 
         // repay
         IERC20(token_to_borrow).transfer(pair, amount_to_repay);
